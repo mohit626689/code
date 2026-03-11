@@ -4,13 +4,15 @@ import ButtonLogin from "@/components/ButtonLogin";
 export default function Home() {
   return (
     <main>
-      <h1>Start our plan</h1>
-      <div>Check your daily task</div>
-      <h2>Hey</h2>
+      <section className="text-center p-6">
+        <h1 className="font-extrabold p-6">Start our plan</h1>
+        <div className="font-semibold p-3">Check your daily task</div>
+        <h2>Hey</h2>
 
-      <Link href="/dashboard">welcome</Link>
+        <Link href="/dashboard"> </Link>
 
-      <ButtonLogin />
+        <ButtonLogin />
+      </section>
     </main>
   );
 }
