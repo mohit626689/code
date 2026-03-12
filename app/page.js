@@ -2,7 +2,7 @@ import Link from "next/link";
 import ButtonLogin from "../components/ButtonLogin";
 import FAQListItem from "../components/FAQListItem";
 import Image from "next/image";
-import productdemo from "./productdemo.jpeg";
+
 export default function Home() {
   const Isloggedin = true;
 
@@ -42,7 +42,7 @@ export default function Home() {
       {/* hero */}
       <section className="py-16 p-6 max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 items-center">
         <Image
-          src="/productdemo.jpeg"
+          src="/productDemo.jpeg"
           alt="product demo"
           width={400}
           height={300}
