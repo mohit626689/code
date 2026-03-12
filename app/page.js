@@ -42,7 +42,7 @@ export default function Home() {
       {/* hero */}
       <section className="py-16 p-6 max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 items-center">
         <Image
-          src="/productDemo.jpeg"
+          src="/productdemo.jpeg"
           alt="product demo"
           width={400}
           height={300}
