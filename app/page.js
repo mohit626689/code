@@ -1,6 +1,6 @@
 import Link from "next/link";
 import ButtonLogin from "../components/ButtonLogin";
-import FAQListItem from "../components/FAQ listing";
+import FAQListItem from "../components/FAQListItem";
 import Image from "next/image";
 import productdemo from "./productdemo.jpeg";
 export default function Home() {
@@ -41,7 +41,12 @@ export default function Home() {
 
       {/* hero */}
       <section className="py-16 p-6 max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 items-center">
-        <Image src={productdemo} alt="product demo" className=" w-96"></Image>
+        <Image
+          src="/productdemo.jpeg"
+          alt="product demo"
+          width={400}
+          height={300}
+        />
         <div>
           <h1 className="text-4xl lg:text-5xl font-extrabold mb-6">
             Start Your Journey Today With Me
