@@ -1,4 +1,3 @@
-import Link from "next/link";
 import ButtonLogin from "../components/ButtonLogin";
 import FAQListItem from "../components/FAQListItem";
 import Image from "next/image";
@@ -42,8 +41,8 @@ export default function Home() {
       {/* hero */}
       <section className="py-16 p-6 max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 items-center">
         <Image
-          src="/productdemo.jpeg"
-          alt="product demo"
+          src="/productDemo.jpeg"
+          alt="product Demo"
           width={400}
           height={300}
         />
@@ -58,7 +57,7 @@ export default function Home() {
             eliminate repetitive tasks so you can focus on growing your
             business.
           </p>
-          <Link href="/dashboard"></Link>
+
           <ButtonLogin loggedin={Isloggedin} name={name} extraStyle="mt-6" />
         </div>
       </section>
