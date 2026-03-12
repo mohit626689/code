@@ -1,7 +1,8 @@
 import Link from "next/link";
 import ButtonLogin from "../components/ButtonLogin";
 import FAQListItem from "../components/FAQ listing";
-
+import Image from "next/image";
+import productdemo from "./productdemo.jpeg";
 export default function Home() {
   const Isloggedin = true;
 
@@ -37,15 +38,24 @@ export default function Home() {
           <ButtonLogin loggedin={Isloggedin} />
         </div>
       </section>
-      <section className="text-center py-16 p-6 max-w-6xl mx-auto">
-        <h1 className="text-4xl lg:text-5xl font-extrabold mb-3">
-          Start Your Journey Today With Me
-        </h1>
 
-        <div className="text-2xl">do work</div>
-        <h2>what happen</h2>
-
-        <Link href="/dashboard"></Link>
+      {/* hero */}
+      <section className="py-16 p-6 max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 items-center">
+        <Image src={productdemo} alt="product demo" className=" w-96"></Image>
+        <div>
+          <h1 className="text-4xl lg:text-5xl font-extrabold mb-6">
+            Start Your Journey Today With Me
+          </h1>
+          <h2>Automate your business workflows to work faster and smarter </h2>
+          <p>
+            {" "}
+            Create powerful automations in minutes, connect your tools, and
+            eliminate repetitive tasks so you can focus on growing your
+            business.
+          </p>
+          <Link href="/dashboard"></Link>
+          <ButtonLogin loggedin={Isloggedin} name={name} extraStyle="mt-6" />
+        </div>
       </section>
 
       <section>
