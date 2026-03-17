@@ -3,6 +3,7 @@ import Link from "next/link";
 
 const ButtonLogin = ({ isloggedin, name, extraStyle }) => {
   console.log(extraStyle);
+
   if (isloggedin) {
     return (
       <Link
@@ -13,7 +14,11 @@ const ButtonLogin = ({ isloggedin, name, extraStyle }) => {
       </Link>
     );
   } else {
-    return <button className="btn btn-primary">Welcome Back {name}</button>;
+    return (
+      <button className={`btn btn-primary ${extraStyle ? extraStyle : ""}`}>
+        Login
+      </button>
+    );
   }
 };
 

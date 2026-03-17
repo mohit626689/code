@@ -1,11 +1,15 @@
 import ButtonLogin from "../components/ButtonLogin";
 import FAQListItem from "../components/FAQListItem";
 import Image from "next/image";
+import { auth } from "@/auth";
 
-export default function Home() {
+export default async function Home() {
   const Isloggedin = true;
 
   const name = "Marc";
+
+  const session = await auth();
+  console.log(session);
 
   const greeting1 = "Hello " + name + " to your account";
   console.log(greeting1);
@@ -14,6 +18,7 @@ export default function Home() {
   const greeting2 = `Hello ${Isloggedin ? name : "there"}`;
   console.log(greeting2);
   // OUTPUT 2: "Hello Marc"
+  console.log(process.env.MONGO_URI);
 
   return (
     <main>
@@ -33,7 +38,7 @@ export default function Home() {
         </div>
 
         {/* button */}
-        <div>
+        <div className="py-7 font-extralight">
           <ButtonLogin loggedin={Isloggedin} />
         </div>
       </section>
@@ -58,7 +63,7 @@ export default function Home() {
             business.
           </p>
 
-          <ButtonLogin loggedin={Isloggedin} name={name} extraStyle="mt-6" />
+          <ButtonLogin loggedin={Isloggedin} name={name} extraStyle="p-6" />
         </div>
       </section>
 
