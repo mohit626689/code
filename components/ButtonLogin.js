@@ -1,16 +1,16 @@
 "use client";
 import Link from "next/link";
 
-const ButtonLogin = ({ isloggedin, name, extraStyle }) => {
+const ButtonLogin = ({ session, extraStyle }) => {
   console.log(extraStyle);
 
-  if (isloggedin) {
+  if (session) {
     return (
       <Link
         href="/dashboard"
         className={`btn btn-primary ${extraStyle ? extraStyle : ""}`}
       >
-        Welcome Back {name}
+        Welcome Back {session.user.name || "fiends"}
       </Link>
     );
   } else {

@@ -4,21 +4,8 @@ import Image from "next/image";
 import { auth } from "@/auth";
 
 export default async function Home() {
-  const Isloggedin = true;
-
-  const name = "Marc";
-
   const session = await auth();
   console.log(session);
-
-  const greeting1 = "Hello " + name + " to your account";
-  console.log(greeting1);
-  // OUTPUT 1: "Hello Marc"
-
-  const greeting2 = `Hello ${Isloggedin ? name : "there"}`;
-  console.log(greeting2);
-  // OUTPUT 2: "Hello Marc"
-  console.log(process.env.MONGO_URI);
 
   return (
     <main>
@@ -39,7 +26,7 @@ export default async function Home() {
 
         {/* button */}
         <div className="py-7 font-extralight">
-          <ButtonLogin loggedin={Isloggedin} />
+          <ButtonLogin session={session} />
         </div>
       </section>
 
@@ -63,7 +50,7 @@ export default async function Home() {
             business.
           </p>
 
-          <ButtonLogin loggedin={Isloggedin} name={name} extraStyle="p-6" />
+          <ButtonLogin session={session} extraStyle="p-6" />
         </div>
       </section>
 
@@ -155,11 +142,7 @@ export default async function Home() {
                   </svg>
                   24/7 support
                 </li>
-                <ButtonLogin
-                  loggedin={Isloggedin}
-                  name={name}
-                  extraStyle="w-full"
-                />
+                <ButtonLogin session={session} extraStyle="w-full" />
               </ul>
             </div>
           </div>
