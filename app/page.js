@@ -50,7 +50,7 @@ export default async function Home() {
             business.
           </p>
 
-          <ButtonLogin session={session} extraStyle="p-6" />
+          <ButtonLogin session={session} extraStyle="mt-6" />
         </div>
       </section>
 

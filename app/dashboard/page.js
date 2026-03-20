@@ -1,18 +1,25 @@
-import Link from "next/link";
+"use client";
+
 import ButtonLogin from "@/components/ButtonLogin";
+import ButtonLogout from "@/components/ButtonLogout";
+import RandomCatImage from "@/components/RandomCatImage";
 
-export default function Home() {
+export default function DashboardPage() {
   return (
-    <main>
-      <section className="text-center p-6">
-        <h1 className="font-extrabold p-6">Start our plan</h1>
-        <div className="font-semibold p-3">Check your daily task</div>
-        <h2>Hey</h2>
+    <main className="text-center p-6">
+      <h1 className="text-3xl font-bold mb-4">Dashboard 🚀</h1>
 
-        <Link href="/dashboard"> </Link>
-
+      <div className="mt-4">
         <ButtonLogin />
-      </section>
+      </div>
+
+      <div className="mt-4">
+        <ButtonLogout />
+      </div>
+
+      <div className="mt-6">
+        <RandomCatImage />
+      </div>
     </main>
   );
 }
