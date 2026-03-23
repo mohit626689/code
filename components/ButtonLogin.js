@@ -29,7 +29,7 @@ const ButtonLogin = ({ session, extraStyle }) => {
       hover:scale-105 hover:from-black hover:to-gray-800 
       ${extraStyle || ""}`}
       onClick={() => {
-        signIn("undefined", { callbackUrl: dashboardUrl });
+        signIn("google", { callbackUrl: dashboardUrl });
       }}
     >
       🚀 Get Started
