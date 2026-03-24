@@ -3,26 +3,19 @@
 import ButtonLogin from "@/components/ButtonLogin";
 import ButtonLogout from "@/components/ButtonLogout";
 import RandomCatImage from "@/components/RandomCatImage";
-import FromNewBoard from "@/components/FromNewBoard";
+import FormNewBoard from "@/components/FormNewBoard";
 
 export default function DashboardPage() {
   return (
-    <main className="text-center p-6">
-      <h1 className="text-3xl font-bold mb-4">Dashboard 🚀</h1>
-
-      <div className="mt-4 bg-base-200 min-h-screen">
-        <ButtonLogin />
-        <FromNewBoard />
+    <main className="min-h-screen bg-base-200 px-6 py-10">
+      <div className="max-w-5xl mx-auto flex justify-between items-center mb-10">
+        <h1 className="text-3xl font-extrabold">Dashboard 🚀</h1>
+        <ButtonLogout />
       </div>
-      <section>
-        <div className="mt-4 max-w-5 mx-auto  bg-base-100 px-5 py-3 flex justify-end">
-          <ButtonLogout />
-        </div>
-      </section>
-      <section className="max-w-5 mx-auto px-5 py-12">
-        <FromNewBoard />
-      </section>
-      <div className="mt-6">
+
+      <div className="max-w-5xl mx-auto flex flex-col items-center gap-8">
+        <ButtonLogin />
+        <FormNewBoard />
         <RandomCatImage />
       </div>
     </main>

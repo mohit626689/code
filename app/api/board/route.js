@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import connectMongo from "@/libs/mongoose";
-import User from "@/models/User";
-import Board from "@/models/Board";
+import User from "@/libs/models/user";
+import Board from "@/libs/models/boards";
 
 export async function POST(req) {
   try {
@@ -26,27 +26,25 @@ export async function POST(req) {
     // Connect DB
     await connectMongo();
 
-    // Get user
+    // Get user (ONLY ONCE ✅)
     const user = await User.findById(session.user.id);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    await connectMongo();
+    // Create board
+    const board = await Board.create({
+      userId: user._id,
+      name: body.name,
+    });
 
-const user = await User.findById(session.user.id);
+    // Link board to user
+    user.boards.push(board._id);
+    await user.save();
 
-const board = await Board.create({
-  userId: user._id,
-  name: body.name,
-});
-
-user.boards.push(board._id);
-await user.save();
-return NextResponse.json({}),
-  }
-  catch(e) {
-    return NextResponse.json ({error: e.message}, {status: 500});
+    return NextResponse.json(board, { status: 201 });
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
