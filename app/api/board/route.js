@@ -8,7 +8,6 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    // Validate input
     if (!body.name) {
       return NextResponse.json(
         { error: "Board name is required" },
@@ -16,30 +15,31 @@ export async function POST(req) {
       );
     }
 
-    // Check auth
     const session = await auth();
 
     if (!session) {
       return NextResponse.json({ error: "Not authorized" }, { status: 401 });
     }
 
-    // Connect DB
     await connectMongo();
 
-    // Get user (ONLY ONCE ✅)
-    const user = await User.findById(session.user.id);
+    // Find user by email, and add boards array if missing
+    let user = await User.findOne({ email: session.user.email });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Create board
+    // Add boards array if it doesn't exist
+    if (!user.boards) {
+      user.boards = [];
+    }
+
     const board = await Board.create({
       userId: user._id,
       name: body.name,
     });
 
-    // Link board to user
     user.boards.push(board._id);
     await user.save();
 
