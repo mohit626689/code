@@ -1,13 +1,16 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { Toaster } from "react-hot-toast";
 
-export default async function LayoutPrivate({ children }) {
-  const session = await auth();
-
-  if (!session) {
-    // redirect user to login page
-    redirect("/api/auth/signin");
-  }
-
-  return <>{children}</>;
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" data-theme="light" className="scroll-smooth">
+      <body>
+        <div>
+          <Toaster />
+        </div>
+        {children}
+      </body>
+    </html>
+  );
 }

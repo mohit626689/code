@@ -1,8 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { Toaster } from "react-hot-toast";
 
 const FormNewBoard = () => {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -10,24 +14,20 @@ const FormNewBoard = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    console.log(name);
-
-    await new Promise((res) => setTimeout(res, 2000));
-
     try {
-      await fetch("/api/board", {
-        method: "POST",
-        body: JSON.stringify({
-          name,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const data = await axios.post("/api/board", { name });
+      setName("");
+      toast.succss("board create");
+
+      router.refresh();
 
       // 2. Redirect to dedicated board page
     } catch (error) {
+      const errorMessage =
+        error.response.data || error.Message || "something went wrong";
+      toast.error("something went wrong");
       // 1. Display error message
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -52,7 +52,7 @@ const FormNewBoard = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="input input-bordered border-2 border-gray-300
-            focus:border-purple-500
+            focus:border-purple-500 w-full max-w-md
             focus:ring-2 focus:ring-purple-300 w-full"
           />
         </div>
