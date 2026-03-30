@@ -1,50 +1,74 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import connectMongo from "@/libs/mongoose";
-import User from "@/libs/models/user";
 import Board from "@/libs/models/boards";
+import User from "@/libs/models/user";
+import mongoose from "mongoose";
 
-export async function POST(req) {
+export async function DELETE(req) {
   try {
-    const body = await req.json();
+    const { searchParams } = req.nextUrl;
+    const boardId = searchParams.get("boardId");
 
-    if (!body.name) {
+    if (!boardId) {
       return NextResponse.json(
-        { error: "Board name is required" },
+        { error: "boardId is required" },
         { status: 400 },
       );
     }
 
     const session = await auth();
 
-    if (!session) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Not authorized" }, { status: 401 });
     }
 
     await connectMongo();
 
-    // Find user by email, and add boards array if missing
-    let user = await User.findOne({ email: session.user.email });
+    // ✅ Find user by email
+    const user = await User.findOne({ email: session.user.email });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Add boards array if it doesn't exist
-    if (!user.boards) {
-      user.boards = [];
+    // ✅ Convert boardId to ObjectId
+    let boardObjectId;
+    try {
+      boardObjectId = new mongoose.Types.ObjectId(boardId);
+    } catch (e) {
+      return NextResponse.json(
+        { error: "Invalid board ID format" },
+        { status: 400 },
+      );
     }
 
-    const board = await Board.create({
+    // ✅ Delete board (verify ownership)
+    const board = await Board.findOneAndDelete({
+      _id: boardObjectId,
       userId: user._id,
-      name: body.name,
     });
 
-    user.boards.push(board._id);
-    await user.save();
+    if (!board) {
+      return NextResponse.json(
+        { error: "Board not found or unauthorized" },
+        { status: 404 },
+      );
+    }
 
-    return NextResponse.json(board, { status: 201 });
+    // ✅ Remove boardId from user's boards array
+    await User.findByIdAndUpdate(
+      user._id,
+      { $pull: { boards: boardObjectId } },
+      { new: true },
+    );
+
+    return NextResponse.json({ success: true });
   } catch (e) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    console.error("DELETE board error:", e);
+    return NextResponse.json(
+      { error: e.message || "Failed to delete board" },
+      { status: 500 },
+    );
   }
 }

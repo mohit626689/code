@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast"; // ✅ FIXED
 
 const FormNewBoard = () => {
   const router = useRouter();
@@ -15,18 +15,20 @@ const FormNewBoard = () => {
     setIsLoading(true);
 
     try {
-      const data = await axios.post("/api/board", { name });
+      await axios.post("/api/board", { name });
+
       setName("");
-      toast.succss("board create");
+
+      toast.success("Board created successfully 🎉"); // ✅ FIXED
 
       router.refresh();
-
-      // 2. Redirect to dedicated board page
     } catch (error) {
       const errorMessage =
-        error.response.data || error.Message || "something went wrong";
-      toast.error("something went wrong");
-      // 1. Display error message
+        error?.response?.data?.error ||
+        error?.message ||
+        "Something went wrong"; // ✅ SAFE
+
+      toast.error(errorMessage); // ✅ USE MESSAGE
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -35,10 +37,10 @@ const FormNewBoard = () => {
 
   return (
     <div className="bg-base-100 p-8 rounded-3xl shadow-xl w-full max-w-md">
+      <Toaster /> {/* ✅ IMPORTANT */}
       <h2 className="text-2xl font-bold mb-6 text-center">
         Create a new feedback board
       </h2>
-
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="label">
@@ -52,8 +54,8 @@ const FormNewBoard = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="input input-bordered border-2 border-gray-300
-            focus:border-purple-500 w-full max-w-md
-            focus:ring-2 focus:ring-purple-300 w-full"
+            focus:border-purple-500 w-full
+            focus:ring-2 focus:ring-purple-300"
           />
         </div>
 

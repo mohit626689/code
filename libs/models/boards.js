@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 
 const boardSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
   },
   name: {
     type: String,

@@ -1,7 +1,7 @@
 import ButtonLogin from "@/components/ButtonLogin";
 import Link from "next/link";
 import ButtonLogout from "@/components/ButtonLogout";
-import RandomCatImage from "@/components/RandomCatImage";
+ 
 import FormNewBoard from "@/components/FormNewBoard";
 import { auth } from "@/auth";
 import connectMongo from "@/libs/mongoose";
@@ -36,9 +36,10 @@ export default async function Dashboard() {
               return (
                 <div
                   key={board._id}
-                  className="bg-base-100 p-6 rounded-3xl border border-base-300 shadow-md hover:text-red-400 "
+                  className="bg-base-100 p-6 rounded-3xl border border-base-300 shadow-md hover:text-red-400
+                   "
                 >
-                  <Link href={`/b/${board._id}`}>{board.name}</Link>
+                  <Link href={`/dashboard/b/${board._id}`}>{board.name}</Link>
                 </div>
               );
             })}

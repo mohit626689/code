@@ -13,6 +13,13 @@ const userSchema = new mongoose.Schema({
   image: {
     type: String,
   },
+  hasAccess: {
+    type: Boolean,
+    default: false,
+  }
+  customerId :{
+    type :string,
+  }
   boards: [
     {
       type: mongoose.Schema.Types.ObjectId,
