@@ -5,7 +5,7 @@ import Board from "@/libs/models/boards";
 import User from "@/libs/models/user";
 import mongoose from "mongoose";
 
-export async function DELETE(req) {
+export async function POST(req) {
   try {
     const { searchParams } = req.nextUrl;
     const boardId = searchParams.get("boardId");
@@ -19,20 +19,27 @@ export async function DELETE(req) {
 
     const session = await auth();
 
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: "Not authorized" }, { status: 401 });
     }
 
     await connectMongo();
 
-    // ✅ Find user by email
-    const user = await User.findOne({ email: session.user.email });
+    const user = await User.findById(session.user.id);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // ✅ Convert boardId to ObjectId
+    // ✅ Access check (from screenshot)
+    if (!user.hasAccess) {
+      return NextResponse.json(
+        { error: "Please subscribe first" },
+        { status: 403 },
+      );
+    }
+
+    // ✅ Convert boardId
     let boardObjectId;
     try {
       boardObjectId = new mongoose.Types.ObjectId(boardId);
@@ -43,32 +50,19 @@ export async function DELETE(req) {
       );
     }
 
-    // ✅ Delete board (verify ownership)
-    const board = await Board.findOneAndDelete({
+    // ✅ Delete board (same as screenshot style)
+    await Board.deleteOne({
       _id: boardObjectId,
-      userId: user._id,
+      userId: session.user.id,
     });
 
-    if (!board) {
-      return NextResponse.json(
-        { error: "Board not found or unauthorized" },
-        { status: 404 },
-      );
-    }
+    // ✅ Screenshot logic (IMPORTANT CHANGE)
+    user.boards = user.boards.filter((id) => id.toString() !== boardId);
 
-    // ✅ Remove boardId from user's boards array
-    await User.findByIdAndUpdate(
-      user._id,
-      { $pull: { boards: boardObjectId } },
-      { new: true },
-    );
+    await user.save();
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({});
   } catch (e) {
-    console.error("DELETE board error:", e);
-    return NextResponse.json(
-      { error: e.message || "Failed to delete board" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }

@@ -16,10 +16,10 @@ const userSchema = new mongoose.Schema({
   hasAccess: {
     type: Boolean,
     default: false,
-  }
-  customerId :{
-    type :string,
-  }
+  },
+  customerId: {
+    type: String,
+  },
   boards: [
     {
       type: mongoose.Schema.Types.ObjectId,
