@@ -1,37 +1,48 @@
-import { redirect } from "next/navigation";
-import Link from "next/link";
+import { notFound } from "next/navigation";
+import dynamic from "next/dynamic";
 import connectMongo from "@/libs/mongoose";
 import Board from "@/libs/models/boards";
-import CardBoardLink from "@/components/CardBoardLink";
-import ButtonBoardDelete from "@/components/ButtonBoardDelete";
+import Post from "@/libs/models/post";
 
-async function getBoard(boardId) {
+const FormAddPost = dynamic(() => import("@/components/FormAddPost"), {
+  ssr: false,
+});
+
+import { auth } from "@/auth";
+
+const getData = async (boardId) => {
   await connectMongo();
-  return await Board.findById(boardId);
-}
 
-export default async function FeedbackBoard({ params }) {
-  const { boardid } = params;
+  const session = await auth();
 
-  const board = await getBoard(boardid);
+  const board = await Board.findOne({
+    _id: boardId,
+    userId: session?.user?.id,
+  });
+  const posts = await Post.find({ boardId }).sort({ createdAt: -1 });
 
   if (!board) {
-    redirect("/dashboard");
+    notFound();
   }
 
+  return { board, posts };
+};
+
+export default async function DashboardBoardPage({ params }) {
+  const { boardId } = params;
+
+  const { board, posts } = await getData(boardId);
+
   return (
-    <main className="bg-base-200 min-h-screen">
-      <section className="bg-base-100">
-        <div className="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between">
-          <Link href="/dashboard" className="btn btn-ghost">
-            ← Back
-          </Link>
-          <ButtonBoardDelete boardId={board._id.toString()} />
-        </div>
+    <main className="min-h-screen bg-base-200">
+      <section className="max-w-5xl mx-auto p-5">
+        <h1 className="text-lg font-bold">{board.name}</h1>
       </section>
-      <section className="max-w-5xl mx-auto px-5 py-12 space-y-12">
-        <h1 className="font-extrabold text-xl mb-4">{board.name}</h1>
-        <CardBoardLink boardId={board._id} />
+
+      <section className="max-w-5xl mx-auto px-5 flex flex-col md:flex-row gap-8">
+        <FormAddPost boardId={boardId} />
+
+        <ul className="space-y-4"></ul>
       </section>
     </main>
   );

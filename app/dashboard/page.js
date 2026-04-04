@@ -4,6 +4,7 @@ import FormNewBoard from "@/components/FormNewBoard";
 import { auth } from "@/auth";
 import connectMongo from "@/libs/mongoose";
 import User from "@/libs/models/user";
+import Board from "@/libs/models/boards";
 import ButtonCheckout from "@/components/ButtonCheckout";
 import ButtonPortal from "@/components/ButtonPortal";
 
@@ -14,9 +15,23 @@ async function getUser() {
 
   await connectMongo();
 
-  return await User.findOne({
+  let user = await User.findOne({
     email: session.user.email,
-  }).populate("boards");
+  });
+
+  if (!user) {
+    // Create user record
+    user = new User({
+      name: session.user.name,
+      email: session.user.email,
+      image: session.user.image,
+    });
+    await user.save();
+  }
+
+  user.boards = await Board.find({ userId: user._id.toString() });
+
+  return user;
 }
 
 export default async function Dashboard() {
@@ -51,12 +66,17 @@ export default async function Dashboard() {
 
           <ul className="grid grid-cols-1 gap-6">
             {user.boards.map((board) => (
-              <div
+              <li
                 key={board._id}
-                className="bg-base-100 p-6 rounded-3xl border border-base-300 shadow-md hover:text-red-400"
+                className="bg-base-100 p-6 rounded-3xl border border-base-300 shadow-md hover:text-red-400 transition-colors"
               >
-                <Link href={`/dashboard/b/${board._id}`}>{board.name}</Link>
-              </div>
+                <Link
+                  href={`/dashboard/b/${board._id}`}
+                  className="block font-medium"
+                >
+                  {board.name}
+                </Link>
+              </li>
             ))}
           </ul>
         </div>

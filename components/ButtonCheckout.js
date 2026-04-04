@@ -33,7 +33,14 @@ const ButtonCheckout = () => {
   };
 
   return (
-    <button className="btn btn-primary" onClick={handleSubscribe}>
+    <button
+      className="relative inline-flex items-center gap-2 px-6 py-3 text-sm rounded-full font-semibold text-white 
+        bg-gradient-to-r from-blue-500 to-purple-600 
+        shadow-lg hover:shadow-purple-500/50 
+        transition-all duration-300 
+        hover:scale-105 hover:from-purple-600 hover:to-blue-500"
+      onClick={handleSubscribe}
+    >
       {isLoading && <span className="loading loading-spinner"></span>}
       Subscribe
     </button>
