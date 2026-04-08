@@ -1,12 +1,10 @@
 import mongoose from "mongoose";
-import crypto from "crypto";
 
 const userSchema = new mongoose.Schema(
   {
-    _id: {
-      type: String,
-      default: () => crypto.randomUUID(),
-    },
+    // ✅ REMOVED custom _id - now uses MongoDB's default ObjectId
+    // This fixes findById() queries
+
     name: {
       type: String,
       trim: true,
@@ -15,6 +13,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
       lowercase: true,
+      unique: true,
+      sparse: true,
     },
     image: {
       type: String,
@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema(
       },
     ],
   },
-  { _id: false },
+  { timestamps: true },
 );
 
 export default mongoose.models.User || mongoose.model("User", userSchema);

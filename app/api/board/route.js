@@ -25,10 +25,31 @@ export async function POST(req) {
 
     await connectMongo();
 
-    const user = await User.findById(session.user.id);
+    // ✅ FIX: Handle both String and ObjectId session.user.id
+    let userId;
+    try {
+      userId = new mongoose.Types.ObjectId(session.user.id);
+    } catch (e) {
+      // If it's already an ObjectId or invalid, use as is
+      userId = session.user.id;
+    }
+
+    // ✅ FIX: Try to find user, if not exists create them
+    let user = await User.findById(userId);
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      console.log("Creating new user:", session.user.id);
+
+      user = await User.create({
+        _id: userId,
+        name: session.user.name || "User",
+        email: session.user.email,
+        image: session.user.image,
+        hasAccess: false,
+        boards: [],
+      });
+
+      console.log("✅ User created:", user._id);
     }
 
     if (!user.hasAccess) {
@@ -39,7 +60,7 @@ export async function POST(req) {
     }
 
     const board = await Board.create({
-      userId: session.user.id,
+      userId: user._id,
       name: name.trim(),
     });
 
@@ -49,6 +70,7 @@ export async function POST(req) {
 
     return NextResponse.json({ board });
   } catch (e) {
+    console.error("Board creation error:", e);
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
@@ -73,7 +95,15 @@ export async function DELETE(req) {
 
     await connectMongo();
 
-    const user = await User.findById(session.user.id);
+    // ✅ FIX: Handle both String and ObjectId session.user.id
+    let userId;
+    try {
+      userId = new mongoose.Types.ObjectId(session.user.id);
+    } catch (e) {
+      userId = session.user.id;
+    }
+
+    const user = await User.findById(userId);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -98,7 +128,7 @@ export async function DELETE(req) {
 
     await Board.deleteOne({
       _id: boardObjectId,
-      userId: session.user.id,
+      userId: userId,
     });
 
     user.boards = user.boards.filter((id) => id.toString() !== boardId);
@@ -107,6 +137,7 @@ export async function DELETE(req) {
 
     return NextResponse.json({});
   } catch (e) {
+    console.error("Board deletion error:", e);
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }

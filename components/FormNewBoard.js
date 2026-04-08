@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast"; // ✅ FIXED
+import toast, { Toaster } from "react-hot-toast";
 
 const FormNewBoard = () => {
   const router = useRouter();
@@ -19,16 +19,24 @@ const FormNewBoard = () => {
 
       setName("");
 
-      toast.success("Board created successfully 🎉"); // ✅ FIXED
+      toast.success("Board created successfully 🎉");
 
       router.refresh();
     } catch (error) {
       const errorMessage =
         error?.response?.data?.error ||
         error?.message ||
-        "Something went wrong"; // ✅ SAFE
+        "Something went wrong";
 
-      toast.error(errorMessage); // ✅ USE MESSAGE
+      // ✅ Better error handling
+      if (error?.response?.status === 403) {
+        toast.error("Please subscribe to create boards!");
+      } else if (error?.response?.status === 401) {
+        toast.error("Please login first!");
+      } else {
+        toast.error(errorMessage);
+      }
+
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -37,7 +45,7 @@ const FormNewBoard = () => {
 
   return (
     <div className="bg-base-100 p-8 rounded-3xl shadow-xl w-full max-w-md">
-      <Toaster /> {/* ✅ IMPORTANT */}
+      <Toaster />
       <h2 className="text-2xl font-bold mb-6 text-center">
         Create a new feedback board
       </h2>
@@ -62,8 +70,9 @@ const FormNewBoard = () => {
         <button
           className="px-8 py-3 rounded-full text-white font-semibold text-lg
           bg-gradient-to-r from-pink-500 to-purple-600 shadow-lg
-          hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+          hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 w-full"
           type="submit"
+          disabled={isLoading}
         >
           {isLoading && (
             <span className="loading loading-spinner loading-xs"></span>

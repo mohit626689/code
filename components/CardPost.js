@@ -1,4 +1,4 @@
-import ButtonDeletePost from "./ButtonDeletePost";
+import ButtonVote from "./ButtonVote";
 
 const CardPost = ({ post }) => {
   return (
@@ -12,8 +12,7 @@ const CardPost = ({ post }) => {
         </div>
       </div>
 
-      {/* RIGHT SIDE DELETE BUTTON */}
-      <ButtonDeletePost postId={post._id.toString()} />
+      <ButtonVote postId={post.id_.toString()} initialVoted={false} />
     </li>
   );
 };

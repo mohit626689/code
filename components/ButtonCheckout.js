@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import ButtonSubscribe from "@/components/ButtonSubscribe";
 
 const ButtonCheckout = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +44,11 @@ const ButtonCheckout = () => {
     >
       {isLoading && <span className="loading loading-spinner"></span>}
       Subscribe
+      <ButtonSubscribe /> component is used to check if the user is already
+      subscribed and show a different button accordingly. It is not used inside
+      this ButtonCheckout component, but it can be used in the parent component
+      to conditionally render ButtonCheckout or a different button for
+      subscribed users.
     </button>
   );
 };

@@ -19,7 +19,7 @@ const getData = async (boardId) => {
     _id: boardId,
     userId: session?.user?.id,
   });
-  const posts = await Post.find({ boardId }).sort({ createdAt: -1 });
+  const posts = await Post.find({ boardId }).sort({ votesCounter: -1 });
 
   if (!board) {
     notFound();
